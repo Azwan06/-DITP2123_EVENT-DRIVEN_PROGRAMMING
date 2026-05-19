@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickServe Vending Machine System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/dist/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080E1A;--bg2:#0C1526;--bg3:#111E35;--bg4:#172847;
+  --panel:#0F1B30;--panel2:#162340;
+  --border:rgba(99,148,255,0.12);--border2:rgba(99,148,255,0.22);
+  --blue:#3B82F6;--blue2:#2563EB;--blue3:#1D4ED8;
+  --cyan:#06B6D4;--cyan2:#0891B2;
+  --accent:#6366F1;--accent2:#4F46E5;
+  --green:#10B981;--green2:#059669;
+  --amber:#F59E0B;--amber2:#D97706;
+  --red:#EF4444;--red2:#DC2626;
+  --purple:#8B5CF6;--purple2:#7C3AED;
+  --text:#F0F6FF;--text2:#94A3C8;--text3:#4E6A9B;
+  --white:#FFFFFF;
+  --radius:12px;--radius-sm:8px;--radius-lg:16px;--radius-xl:20px;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+  --shadow-blue:0 0 24px rgba(59,130,246,0.15);
+}
+html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;overflow:hidden}
+
+/* ─── TABS ─── */
+.tab-bar{display:flex;align-items:center;gap:4px;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.tab-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid transparent;border-radius:var(--radius-sm);background:transparent;color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:.2s}
+.tab-btn i{font-size:14px}
+.tab-btn:hover{background:var(--bg3);color:var(--text)}
+.tab-btn.active{background:var(--blue);border-color:var(--blue2);color:#fff;box-shadow:0 0 12px rgba(59,130,246,0.3)}
+.app-title{font-size:13px;font-weight:700;color:var(--text);margin-right:12px;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.app-title span{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--blue);border-radius:6px;font-size:12px}
+
+/* ─── LAYOUT ─── */
+.app{display:flex;height:calc(100vh - 53px)}
+.page{display:none;width:100%;height:100%;overflow:hidden}
+.page.active{display:flex}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:220px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--border2)}
+.sidebar-logo{padding:20px 18px 14px;border-bottom:1px solid var(--border)}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0}
+.logo-text{font-size:14px;font-weight:700;line-height:1.2}
+.logo-text span{font-size:10px;font-weight:400;color:var(--text2);display:block;letter-spacing:.06em}
+.sidebar-section{padding:14px 10px 6px;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:1px 8px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:.15s;position:relative}
+.nav-item i{font-size:17px;width:20px;flex-shrink:0}
+.nav-item:hover{background:var(--bg4);color:var(--text)}
+.nav-item.active{background:rgba(59,130,246,0.15);color:var(--blue)}
+.nav-item.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:var(--blue);border-radius:0 3px 3px 0}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px}
+.sidebar-footer{margin-top:auto;padding:14px;border-top:1px solid var(--border)}
+.user-pill{display:flex;align-items:center;gap:9px;padding:8px;border-radius:var(--radius-sm);cursor:pointer;transition:.15s}
+.user-pill:hover{background:var(--bg4)}
+.avatar{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.user-info{flex:1;min-width:0}.user-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:10px;color:var(--text2)}
+
+/* ─── CONTENT ─── */
+.content{flex:1;overflow-y:auto;background:var(--bg)}
+.content::-webkit-scrollbar{width:5px}.content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.content-inner{padding:24px}
+
+/* ─── COMMON ─── */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.page-title{font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
+.page-title i{color:var(--blue)}
+.page-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,0.4)}
+.btn-secondary{background:var(--bg4);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{background:var(--panel2);border-color:var(--border2)}
+.btn-danger{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}.btn-danger:hover{background:var(--red);color:#fff}
+.btn-success{background:var(--green);color:#fff}.btn-success:hover{background:var(--green2);transform:translateY(-1px)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-lg{padding:12px 24px;font-size:14px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-green{background:rgba(16,185,129,0.12);color:var(--green)}
+.badge-red{background:rgba(239,68,68,0.12);color:var(--red)}
+.badge-amber{background:rgba(245,158,11,0.12);color:var(--amber)}
+.badge-blue{background:rgba(59,130,246,0.12);color:var(--blue)}
+.badge-purple{background:rgba(139,92,246,0.12);color:var(--purple)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.card-sm{padding:14px}
+.input-wrap{position:relative;margin-bottom:14px}
+.input-wrap label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;letter-spacing:.03em}
+.input-field{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:10px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:.2s}
+.input-field:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.12)}
+.input-icon{position:relative}.input-icon i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:16px}
+.input-icon .input-field{padding-left:38px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* ─── LOGIN ─── */
+#page-login{align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
+#page-login::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(59,130,246,0.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 20%,rgba(99,102,241,0.06) 0%,transparent 50%)}
+.login-container{width:420px;position:relative;z-index:1}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--blue),var(--accent));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px;color:#fff}
+.login-logo h1{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.login-logo p{font-size:12px;color:var(--text2);margin-top:4px}
+.login-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;box-shadow:var(--shadow)}
+.login-tabs{display:flex;background:var(--bg3);border-radius:var(--radius-sm);padding:3px;margin-bottom:20px}
+.login-tab{flex:1;text-align:center;padding:7px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);transition:.2s}
+.login-tab.active{background:var(--blue);color:#fff}
+.remember-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);margin-bottom:16px;cursor:pointer}
+.check-box{width:16px;height:16px;border:1px solid var(--border2);border-radius:4px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.check-box.checked{background:var(--blue);border-color:var(--blue)}
+.check-box i{font-size:11px;color:#fff}
+.forgot{font-size:12px;color:var(--blue);cursor:pointer;text-decoration:none}
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text3);font-size:11px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ─── STAT CARDS ─── */
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;position:relative;overflow:hidden;transition:.2s}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.06}
+.stat-card.blue::after{background:var(--blue)}
+.stat-card.green::after{background:var(--green)}
+.stat-card.amber::after{background:var(--amber)}
+.stat-card.red::after{background:var(--red)}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+.stat-icon.blue{background:rgba(59,130,246,0.12);color:var(--blue)}
+.stat-icon.green{background:rgba(16,185,129,0.12);color:var(--green)}
+.stat-icon.amber{background:rgba(245,158,11,0.12);color:var(--amber)}
+.stat-icon.red{background:rgba(239,68,68,0.12);color:var(--red)}
+.stat-value{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.stat-label{font-size:12px;color:var(--text2);margin-top:4px}
+.stat-change{font-size:11px;margin-top:8px;display:flex;align-items:center;gap:4px}
+.stat-change.up{color:var(--green)}.stat-change.down{color:var(--red)}
+
+/* ─── CHART AREA ─── */
+.chart-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.chart-title{font-size:14px;font-weight:700}
+.chart-legend{display:flex;gap:14px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:140px;padding-top:10px}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar-wrap{width:100%;display:flex;gap:3px;align-items:flex-end;height:120px}
+.bar{border-radius:4px 4px 0 0;width:100%;transition:.4s}
+.bar-blue{background:linear-gradient(to top,var(--blue3),var(--blue))}
+.bar-cyan{background:linear-gradient(to top,var(--cyan2),var(--cyan))}
+.bar-label{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.donut-chart{width:100px;height:100px;position:relative;flex-shrink:0}
+.donut-chart svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:16px;font-weight:800}
+.donut-center span{font-size:10px;color:var(--text2);font-weight:400}
+
+/* ─── PRODUCTS ─── */
+.filter-bar{display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--border2);color:var(--text)}
+.chip.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.product-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:.2s;cursor:pointer}
+.product-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.product-img{height:110px;display:flex;align-items:center;justify-content:center;font-size:48px;background:var(--bg3);position:relative}
+.product-img .stock-badge{position:absolute;top:8px;right:8px}
+.product-body{padding:12px}
+.product-name{font-size:13px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.product-cat{font-size:11px;color:var(--text3);margin-bottom:8px}
+.product-footer{display:flex;align-items:center;justify-content:space-between}
+.product-price{font-size:15px;font-weight:800;color:var(--blue)}
+.add-btn{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;border:none;cursor:pointer;font-size:14px;transition:.15s}
+.add-btn:hover{background:var(--blue2);transform:scale(1.1)}
+
+/* ─── CART ─── */
+.cart-table{width:100%;border-collapse:collapse}
+.cart-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.cart-table td{padding:12px 14px;border-bottom:1px solid rgba(99,148,255,0.06);vertical-align:middle}
+.cart-table tr:last-child td{border-bottom:none}
+.cart-table tr:hover td{background:rgba(99,148,255,0.03)}
+.qty-ctrl{display:flex;align-items:center;gap:8px}
+.qty-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:.15s}
+.qty-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.qty-num{width:32px;text-align:center;font-weight:600;font-size:13px}
+.cart-item-img{width:36px;height:36px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.cart-item-info{display:flex;align-items:center;gap:10px}
+.total-panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px}
+.total-row.grand{border-top:1px solid var(--border);margin-top:8px;padding-top:14px;font-size:18px;font-weight:800}
+.total-row.grand .amt{color:var(--blue)}
+
+/* ─── PAYMENT ─── */
+.payment-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.pay-method{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;text-align:center;cursor:pointer;transition:.2s}
+.pay-method:hover{border-color:var(--border2)}
+.pay-method.selected{border-color:var(--blue);background:rgba(59,130,246,0.08)}
+.pay-method i{font-size:28px;margin-bottom:8px;display:block}
+.pay-method.cash i{color:var(--green)}
+.pay-method.qr i{color:var(--purple)}
+.pay-method.card i{color:var(--cyan)}
+.pay-method span{font-size:12px;font-weight:600}
+.qr-mock{width:150px;height:150px;background:var(--bg3);border-radius:12px;margin:0 auto 14px;display:grid;grid-template-columns:repeat(10,1fr);gap:2px;padding:14px;overflow:hidden}
+.qr-pixel{border-radius:2px;background:var(--text2)}
+.qr-pixel.dark{background:var(--text)}
+.amount-display{background:var(--bg3);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;text-align:center}
+.amount-display .amount-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.amount-display .amount-val{font-size:32px;font-weight:800;letter-spacing:-.02em}
+.balance-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text2)}
+.balance-row.positive span:last-child{color:var(--green);font-weight:700}
+.balance-row.highlight{font-weight:700;color:var(--text);border-top:1px solid var(--border);padding-top:10px;margin-top:4px}
+
+/* ─── INVENTORY ─── */
+.data-grid-wrap{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.data-grid-header{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;background:var(--bg3);border-bottom:1px solid var(--border)}
+.data-table td{padding:11px 14px;border-bottom:1px solid rgba(99,148,255,0.05);font-size:12px;vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(99,148,255,0.03)}
+.stock-bar-wrap{display:flex;align-items:center;gap:8px}
+.stock-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.stock-fill{height:100%;border-radius:3px;transition:.3s}
+.action-btns{display:flex;gap:4px}
+.icon-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:.15s}
+.icon-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.icon-btn.del:hover{background:var(--red);border-color:var(--red);color:#fff}
+.img-preview{width:36px;height:36px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px}
+
+/* ─── REPORTS ─── */
+.report-tabs{display:flex;background:var(--bg3);border-radius:var(--radius-sm);padding:3px;margin-bottom:18px;display:inline-flex}
+.report-tab{padding:7px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);transition:.15s}
+.report-tab.active{background:var(--blue);color:#fff}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;text-align:center}
+.kpi-num{font-size:22px;font-weight:800;letter-spacing:-.01em}
+.kpi-label{font-size:11px;color:var(--text2);margin-top:3px}
+.top-products{display:flex;flex-direction:column;gap:8px}
+.top-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg3);border-radius:var(--radius-sm)}
+.top-rank{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.top-rank.r1{background:rgba(245,158,11,.15);color:var(--amber)}
+.top-rank.r2{background:rgba(148,163,200,.1);color:var(--text2)}
+.top-rank.r3{background:rgba(205,127,50,.1);color:#CD7F32}
+.top-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin:2px 0}
+.top-fill{height:100%;background:linear-gradient(to right,var(--blue3),var(--blue));border-radius:3px}
+.top-info{flex:1}
+.top-name{font-size:12px;font-weight:600}
+.top-sold{font-size:10px;color:var(--text3)}
+.top-rev{font-size:12px;font-weight:700;color:var(--blue);margin-left:auto;white-space:nowrap}
+.line-chart{width:100%;height:130px;position:relative}
+.line-chart svg{width:100%;height:100%}
+
+/* ─── USERS ─── */
+.user-table tr .actions{opacity:0;transition:.15s}
+.user-table tr:hover .actions{opacity:1}
+.user-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px}
+.user-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;text-align:center;transition:.2s}
+.user-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.user-avatar{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;margin:0 auto 10px}
+.user-card-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.user-card-role{font-size:11px;color:var(--text2);margin-bottom:10px}
+.user-card-actions{display:flex;gap:6px;justify-content:center}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--panel);border:1px solid var(--border2);border-radius:var(--radius-xl);padding:28px;width:400px;box-shadow:0 24px 60px rgba(0,0,0,0.5);animation:modalIn .2s ease}
+@keyframes modalIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:700}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.page.active .content-inner>*{animation:fadeUp .3s ease both}
+.page.active .content-inner>*:nth-child(2){animation-delay:.05s}
+.page.active .content-inner>*:nth-child(3){animation-delay:.1s}
+.page.active .content-inner>*:nth-child(4){animation-delay:.15s}
+.page.active .content-inner>*:nth-child(5){animation-delay:.2s}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="app-title"><span><i class="ti ti-coffee"></i></span>QuickServe</div>
+  <button class="tab-btn active" onclick="showPage('login',this)"><i class="ti ti-login"></i>Login</button>
+  <button class="tab-btn" onclick="showPage('dashboard',this)"><i class="ti ti-dashboard"></i>Dashboard</button>
+  <button class="tab-btn" onclick="showPage('products',this)"><i class="ti ti-package"></i>Products</button>
+  <button class="tab-btn" onclick="showPage('cart',this)"><i class="ti ti-shopping-cart"></i>Cart</button>
+  <button class="tab-btn" onclick="showPage('payment',this)"><i class="ti ti-credit-card"></i>Payment</button>
+  <button class="tab-btn" onclick="showPage('inventory',this)"><i class="ti ti-clipboard-list"></i>Inventory</button>
+  <button class="tab-btn" onclick="showPage('reports',this)"><i class="ti ti-chart-bar"></i>Reports</button>
+  <button class="tab-btn" onclick="showPage('users',this)"><i class="ti ti-users"></i>Users</button>
+</div>
+
+<div class="app">
+
+<!-- ══════════════════════════════════════════
+     PAGE 1 — LOGIN
+══════════════════════════════════════════ -->
+<div id="page-login" class="page active">
+  <div class="login-container">
+    <div class="login-logo">
+      <div class="login-logo-icon"><i class="ti ti-coffee"></i></div>
+      <h1>QuickServe</h1>
+      <p>Vending Machine Management System</p>
+    </div>
+    <div class="login-card">
+      <div class="login-tabs">
+        <div class="login-tab active" onclick="setLoginTab(this,'admin')">Admin</div>
+        <div class="login-tab" onclick="setLoginTab(this,'staff')">Staff</div>
+        <div class="login-tab" onclick="setLoginTab(this,'guest')">Guest</div>
+      </div>
+      <div class="input-wrap input-icon">
+        <label>Username</label>
+        <i class="ti ti-user"></i>
+        <input class="input-field" type="text" placeholder="Enter your username" value="admin">
+      </div>
+      <div class="input-wrap input-icon">
+        <label>Password</label>
+        <i class="ti ti-lock"></i>
+        <input class="input-field" type="password" placeholder="••••••••" value="12345678">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <div class="remember-row" onclick="toggleCheck(this)">
+          <div class="check-box checked"><i class="ti ti-check"></i></div>
+          <span>Remember me</span>
+        </div>
+        <a class="forgot">Forgot password?</a>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="showPage('dashboard',document.querySelectorAll('.tab-btn')[1])">
+        <i class="ti ti-login"></i> Sign In
+      </button>
+      <div class="divider">or continue as</div>
+      <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="showPage('products',document.querySelectorAll('.tab-btn')[2])">
+        <i class="ti ti-coffee"></i> Browse as Guest Customer
+      </button>
+    </div>
+    <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:16px">QuickServe v2.0 · Diploma Project 2026 · C# WinForms</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 2 — DASHBOARD
+══════════════════════════════════════════ -->
+<div id="page-dashboard" class="page">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon"><i class="ti ti-coffee"></i></div>
+        <div class="logo-text">QuickServe<span>Management Portal</span></div>
+      </div>
+    </div>
+    <div class="sidebar-section">Main</div>
+    <div class="nav-item active"><i class="ti ti-dashboard"></i>Dashboard</div>
+    <div class="nav-item" onclick="showPage('products',document.querySelectorAll('.tab-btn')[2])"><i class="ti ti-package"></i>Products</div>
+    <div class="nav-item" onclick="showPage('cart',document.querySelectorAll('.tab-btn')[3])"><i class="ti ti-shopping-cart"></i>Cart</div>
+    <div class="nav-item" onclick="showPage('payment',document.querySelectorAll('.tab-btn')[4])"><i class="ti ti-credit-card"></i>Payment</div>
+    <div class="sidebar-section">Admin</div>
+    <div class="nav-item" onclick="showPage('inventory',document.querySelectorAll('.tab-btn')[5])"><i class="ti ti-clipboard-list"></i>Inventory <span class="nav-badge">3</span></div>
+    <div class="nav-item" onclick="showPage('reports',document.querySelectorAll('.tab-btn')[6])"><i class="ti ti-chart-bar"></i>Sales Reports</div>
+    <div class="nav-item" onclick="showPage('users',document.querySelectorAll('.tab-btn')[7])"><i class="ti ti-users"></i>User Management</div>
+    <div class="sidebar-section">System</div>
+    <div class="nav-item"><i class="ti ti-settings"></i>Settings</div>
+    <div class="nav-item"><i class="ti ti-bell"></i>Notifications <span class="nav-badge" style="background:var(--amber)">5</span></div>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="avatar">AD</div>
+        <div class="user-info">
+          <div class="user-name">Ahmad Danial</div>
+          <div class="user-role">Administrator</div>
+        </div>
+        <i class="ti ti-logout" style="color:var(--text3);font-size:15px"></i>
+      </div>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="content-inner">
+      <div class="page-header">
+        <div><div class="page-title"><i class="ti ti-dashboard"></i>Dashboard</div><div class="page-sub">Monday, 19 May 2026 · QuickServe Point A, Melaka</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary btn-sm"><i class="ti ti-refresh"></i>Refresh</button>
+          <button class="btn btn-primary btn-sm"><i class="ti ti-download"></i>Export</button>
+        </div>
+      </div>
+      <!-- Stats -->
+      <div class="grid-4" style="margin-bottom:20px">
+        <div class="stat-card blue">
+          <div class="stat-icon blue"><i class="ti ti-currency-dollar"></i></div>
+          <div class="stat-value">RM 4,820</div>
+          <div class="stat-label">Total Revenue Today</div>
+          <div class="stat-change up"><i class="ti ti-trending-up"></i>+12.4% from yesterday</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon green"><i class="ti ti-shopping-bag"></i></div>
+          <div class="stat-value">247</div>
+          <div class="stat-label">Transactions Today</div>
+          <div class="stat-change up"><i class="ti ti-trending-up"></i>+8.1% from yesterday</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-icon amber"><i class="ti ti-package"></i></div>
+          <div class="stat-value">86</div>
+          <div class="stat-label">Products in Stock</div>
+          <div class="stat-change down"><i class="ti ti-trending-down"></i>3 products low stock</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon red"><i class="ti ti-alert-triangle"></i></div>
+          <div class="stat-value">3</div>
+          <div class="stat-label">Low Stock Alerts</div>
+          <div class="stat-change down"><i class="ti ti-alert-circle"></i>Needs restocking</div>
+        </div>
+      </div>
+      <!-- Charts Row -->
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Weekly Revenue</div>
+            <div class="chart-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>This week</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Last week</div>
+            </div>
+          </div>
+          <div class="chart-bars" id="revenue-chart"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div class="chart-title">Sales by Category</div></div>
+          <div style="display:flex;align-items:center;gap:20px">
+            <div class="donut-chart">
+              <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--border)" stroke-width="3"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--blue)" stroke-width="3" stroke-dasharray="38 62" stroke-linecap="round"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="25 75" stroke-dashoffset="-38" stroke-linecap="round"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--amber)" stroke-width="3" stroke-dasharray="20 80" stroke-dashoffset="-63" stroke-linecap="round"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--purple)" stroke-width="3" stroke-dasharray="17 83" stroke-dashoffset="-83" stroke-linecap="round"/></svg>
+              <div class="donut-center">62%<span>Drinks</span></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:10px;height:10px;background:var(--blue);border-radius:3px"></div><span style="flex:1">Drinks</span><strong>38%</strong></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:10px;height:10px;background:var(--green);border-radius:3px"></div><span style="flex:1">Snacks</span><strong>25%</strong></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:10px;height:10px;background:var(--amber);border-radius:3px"></div><span style="flex:1">Noodles</span><strong>20%</strong></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:10px;height:10px;background:var(--purple);border-radius:3px"></div><span style="flex:1">Other</span><strong>17%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Recent Transactions -->
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">Recent Transactions</div><button class="btn btn-secondary btn-sm">View All</button></div>
+        <table class="cart-table">
+          <thead><tr><th>TXN ID</th><th>Customer</th><th>Items</th><th>Amount</th><th>Method</th><th>Time</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)">#TXN-0247</td><td>Nur Aisyah</td><td style="color:var(--text2)">3 items</td><td style="font-weight:700;color:var(--blue)">RM 12.80</td><td><span class="badge badge-green">QR Pay</span></td><td style="color:var(--text3);font-size:12px">10:42 AM</td><td><span class="badge badge-green">Completed</span></td></tr>
+            <tr><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)">#TXN-0246</td><td>Guest</td><td style="color:var(--text2)">1 item</td><td style="font-weight:700;color:var(--blue)">RM 3.50</td><td><span class="badge badge-blue">Cash</span></td><td style="color:var(--text3);font-size:12px">10:38 AM</td><td><span class="badge badge-green">Completed</span></td></tr>
+            <tr><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)">#TXN-0245</td><td>Hafiz Rahman</td><td style="color:var(--text2)">5 items</td><td style="font-weight:700;color:var(--blue)">RM 24.00</td><td><span class="badge badge-purple">Card</span></td><td style="color:var(--text3);font-size:12px">10:31 AM</td><td><span class="badge badge-amber">Processing</span></td></tr>
+            <tr><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)">#TXN-0244</td><td>Siti Nora</td><td style="color:var(--text2)">2 items</td><td style="font-weight:700;color:var(--blue)">RM 8.90</td><td><span class="badge badge-green">QR Pay</span></td><td style="color:var(--text3);font-size:12px">10:22 AM</td><td><span class="badge badge-green">Completed</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 3 — PRODUCTS
+══════════════════════════════════════════ -->
+<div id="page-products" class="page">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon"><i class="ti ti-coffee"></i></div><div class="logo-text">QuickServe<span>Product Catalogue</span></div></div></div>
+    <div class="sidebar-section">Browse</div>
+    <div class="nav-item active"><i class="ti ti-package"></i>All Products</div>
+    <div class="nav-item"><i class="ti ti-coffee"></i>Drinks</div>
+    <div class="nav-item"><i class="ti ti-cookie"></i>Snacks</div>
+    <div class="nav-item"><i class="ti ti-bowl"></i>Instant Noodles</div>
+    <div class="nav-item"><i class="ti ti-candy"></i>Chocolate</div>
+    <div class="nav-item"><i class="ti ti-pencil"></i>Stationery</div>
+    <div class="nav-item"><i class="ti ti-droplet"></i>Personal Care</div>
+    <div class="sidebar-section">Cart</div>
+    <div class="nav-item" onclick="showPage('cart',document.querySelectorAll('.tab-btn')[3])"><i class="ti ti-shopping-cart"></i>My Cart <span class="nav-badge">4</span></div>
+    <div class="sidebar-footer"><div class="user-pill"><div class="avatar" style="background:linear-gradient(135deg,var(--green),var(--cyan))">GU</div><div class="user-info"><div class="user-name">Guest User</div><div class="user-role">Customer</div></div></div></div>
+  </nav>
+  <div class="content">
+    <div class="content-inner">
+      <div class="page-header">
+        <div><div class="page-title"><i class="ti ti-package"></i>Products</div><div class="page-sub">86 products available · 6 categories</div></div>
+        <button class="btn btn-primary btn-sm" onclick="showPage('cart',document.querySelectorAll('.tab-btn')[3])"><i class="ti ti-shopping-cart"></i>View Cart (4)</button>
+      </div>
+      <div class="filter-bar">
+        <div class="input-icon" style="flex:1;min-width:200px">
+          <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px"></i>
+          <input class="input-field" style="padding-left:36px" placeholder="Search products…" type="text">
+        </div>
+        <div class="filter-chips">
+          <div class="chip active">All</div>
+          <div class="chip">☕ Drinks</div>
+          <div class="chip">🍪 Snacks</div>
+          <div class="chip">🍜 Noodles</div>
+          <div class="chip">🍫 Chocolate</div>
+          <div class="chip">✏️ Stationery</div>
+          <div class="chip">🧴 Care</div>
+        </div>
+      </div>
+      <div class="product-grid">
+        <div class="product-card"><div class="product-img">☕<span class="stock-badge badge badge-green">In Stock</span></div><div class="product-body"><div class="product-name">Nescafé 3-in-1</div><div class="product-cat">Drinks</div><div class="product-footer"><div class="product-price">RM 2.50</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">🧃<span class="stock-badge badge badge-green">In Stock</span></div><div class="product-body"><div class="product-name">Milo Can 240ml</div><div class="product-cat">Drinks</div><div class="product-footer"><div class="product-price">RM 3.00</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">🥤<span class="stock-badge badge badge-amber">Low Stock</span></div><div class="product-body"><div class="product-name">100Plus Original</div><div class="product-cat">Drinks</div><div class="product-footer"><div class="product-price">RM 2.80</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">🍪<span class="stock-badge badge badge-green">In Stock</span></div><div class="product-body"><div class="product-name">Oreo Original</div><div class="product-cat">Snacks</div><div class="product-footer"><div class="product-price">RM 1.80</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">🍟<span class="stock-badge badge badge-green">In Stock</span></div><div class="product-body"><div class="product-name">Mamee Monster</div><div class="product-cat">Snacks</div><div class="product-footer"><div class="product-price">RM 1.20</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">🍜<span class="stock-badge badge badge-green">In Stock</span></div><div class="product-body"><div class="product-name">Maggi Asam Laksa</div><div class="product-cat">Noodles</div><div class="product-footer"><div class="product-price">RM 1.50</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">🍫<span class="stock-badge badge badge-green">In Stock</span></div><div class="product-body"><div class="product-name">KitKat 4 Finger</div><div class="product-cat">Chocolate</div><div class="product-footer"><div class="product-price">RM 3.50</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">💊<span class="stock-badge badge badge-red">Out Stock</span></div><div class="product-body"><div class="product-name">Panadol Soluble</div><div class="product-cat">Personal Care</div><div class="product-footer"><div class="product-price">RM 4.50</div><button class="add-btn" disabled style="opacity:.4"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">✏️<span class="stock-badge badge badge-green">In Stock</span></div><div class="product-body"><div class="product-name">Stabilo Pen Set</div><div class="product-cat">Stationery</div><div class="product-footer"><div class="product-price">RM 6.00</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+        <div class="product-card"><div class="product-img">🍵<span class="stock-badge badge badge-green">In Stock</span></div><div class="product-body"><div class="product-name">Teh Tarik Can</div><div class="product-cat">Drinks</div><div class="product-footer"><div class="product-price">RM 2.00</div><button class="add-btn"><i class="ti ti-plus"></i></button></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 4 — CART
+══════════════════════════════════════════ -->
+<div id="page-cart" class="page">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon"><i class="ti ti-coffee"></i></div><div class="logo-text">QuickServe<span>Shopping Cart</span></div></div></div>
+    <div class="sidebar-section">Navigation</div>
+    <div class="nav-item" onclick="showPage('products',document.querySelectorAll('.tab-btn')[2])"><i class="ti ti-arrow-left"></i>Back to Products</div>
+    <div class="nav-item active"><i class="ti ti-shopping-cart"></i>My Cart <span class="nav-badge">4</span></div>
+    <div class="nav-item" onclick="showPage('payment',document.querySelectorAll('.tab-btn')[4])"><i class="ti ti-credit-card"></i>Payment</div>
+    <div style="padding:14px">
+      <div class="card" style="margin-top:8px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:600;letter-spacing:.05em">ORDER SUMMARY</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--text2)">Items (4)</span><span>RM 11.80</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--text2)">Service fee</span><span>RM 0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:800;padding-top:8px;border-top:1px solid var(--border)"><span>Total</span><span style="color:var(--blue)">RM 11.80</span></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px" onclick="showPage('payment',document.querySelectorAll('.tab-btn')[4])"><i class="ti ti-credit-card"></i>Checkout</button>
+      </div>
+    </div>
+    <div class="sidebar-footer"><div class="user-pill"><div class="avatar" style="background:linear-gradient(135deg,var(--green),var(--cyan))">GU</div><div class="user-info"><div class="user-name">Guest User</div><div class="user-role">Customer</div></div></div></div>
+  </nav>
+  <div class="content">
+    <div class="content-inner">
+      <div class="page-header">
+        <div><div class="page-title"><i class="ti ti-shopping-cart"></i>Shopping Cart</div><div class="page-sub">4 items selected</div></div>
+        <button class="btn btn-danger btn-sm"><i class="ti ti-trash"></i>Clear All</button>
+      </div>
+      <div class="data-grid-wrap">
+        <table class="cart-table">
+          <thead><tr><th>Product</th><th>Category</th><th>Unit Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="cart-item-info"><div class="cart-item-img">☕</div><div><div style="font-size:13px;font-weight:600">Nescafé 3-in-1</div><div style="font-size:11px;color:var(--text3)">SKU: DRK-001</div></div></div></td>
+              <td><span class="badge badge-blue">Drinks</span></td>
+              <td style="font-weight:600">RM 2.50</td>
+              <td><div class="qty-ctrl"><button class="qty-btn">−</button><span class="qty-num">2</span><button class="qty-btn">+</button></div></td>
+              <td style="font-weight:700;color:var(--blue)">RM 5.00</td>
+              <td><button class="icon-btn del"><i class="ti ti-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><div class="cart-item-info"><div class="cart-item-img">🧃</div><div><div style="font-size:13px;font-weight:600">Milo Can 240ml</div><div style="font-size:11px;color:var(--text3)">SKU: DRK-003</div></div></div></td>
+              <td><span class="badge badge-blue">Drinks</span></td>
+              <td style="font-weight:600">RM 3.00</td>
+              <td><div class="qty-ctrl"><button class="qty-btn">−</button><span class="qty-num">1</span><button class="qty-btn">+</button></div></td>
+              <td style="font-weight:700;color:var(--blue)">RM 3.00</td>
+              <td><button class="icon-btn del"><i class="ti ti-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><div class="cart-item-info"><div class="cart-item-img">🍪</div><div><div style="font-size:13px;font-weight:600">Oreo Original</div><div style="font-size:11px;color:var(--text3)">SKU: SNK-002</div></div></div></td>
+              <td><span class="badge badge-amber">Snacks</span></td>
+              <td style="font-weight:600">RM 1.80</td>
+              <td><div class="qty-ctrl"><button class="qty-btn">−</button><span class="qty-num">1</span><button class="qty-btn">+</button></div></td>
+              <td style="font-weight:700;color:var(--blue)">RM 1.80</td>
+              <td><button class="icon-btn del"><i class="ti ti-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><div class="cart-item-info"><div class="cart-item-img">🍜</div><div><div style="font-size:13px;font-weight:600">Maggi Asam Laksa</div><div style="font-size:11px;color:var(--text3)">SKU: NDL-001</div></div></div></td>
+              <td><span class="badge badge-purple">Noodles</span></td>
+              <td style="font-weight:600">RM 1.50</td>
+              <td><div class="qty-ctrl"><button class="qty-btn">−</button><span class="qty-num">1</span><button class="qty-btn">+</button></div></td>
+              <td style="font-weight:700;color:var(--blue)">RM 1.50</td>
+              <td><button class="icon-btn del"><i class="ti ti-trash"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <div class="total-panel" style="width:300px">
+          <div class="total-row"><span>Subtotal</span><span>RM 11.30</span></div>
+          <div class="total-row"><span>Service Fee</span><span style="color:var(--green)">FREE</span></div>
+          <div class="total-row grand"><span>Total</span><span class="amt">RM 11.30</span></div>
+          <button class="btn btn-success" style="width:100%;justify-content:center;margin-top:14px" onclick="showPage('payment',document.querySelectorAll('.tab-btn')[4])"><i class="ti ti-credit-card"></i>Proceed to Payment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 5 — PAYMENT
+══════════════════════════════════════════ -->
+<div id="page-payment" class="page">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)">
+    <div style="width:480px">
+      <div class="page-title" style="margin-bottom:20px;justify-content:center"><i class="ti ti-credit-card"></i>Select Payment Method</div>
+      <div class="payment-methods">
+        <div class="pay-method cash selected" onclick="selectPay(this)"><i class="ti ti-cash"></i><span>Cash</span></div>
+        <div class="pay-method qr" onclick="selectPay(this)"><i class="ti ti-qrcode"></i><span>QR Pay</span></div>
+        <div class="pay-method card" onclick="selectPay(this)"><i class="ti ti-credit-card"></i><span>Card</span></div>
+      </div>
+      <!-- Cash panel -->
+      <div id="pay-cash" class="card" style="margin-bottom:14px">
+        <div class="amount-display">
+          <div class="amount-label">TOTAL AMOUNT DUE</div>
+          <div class="amount-val" style="color:var(--blue)">RM 11.30</div>
+        </div>
+        <div class="input-wrap input-icon">
+          <label>Cash Tendered (RM)</label>
+          <i class="ti ti-cash" style="color:var(--green)"></i>
+          <input class="input-field" id="cash-input" type="number" placeholder="0.00" value="20.00" oninput="calcBalance(this.value)">
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px 14px">
+          <div class="balance-row"><span>Total</span><span>RM 11.30</span></div>
+          <div class="balance-row"><span>Cash Tendered</span><span>RM 20.00</span></div>
+          <div class="balance-row positive highlight"><span>Change</span><span id="change-display">RM 8.70</span></div>
+        </div>
+        <button class="btn btn-success btn-lg" style="width:100%;justify-content:center;margin-top:14px" onclick="showReceipt()">
+          <i class="ti ti-check"></i>Confirm Payment — RM 11.30
+        </button>
+      </div>
+      <!-- QR panel -->
+      <div id="pay-qr" class="card" style="display:none;margin-bottom:14px;text-align:center">
+        <div class="amount-display" style="margin-bottom:16px"><div class="amount-label">SCAN TO PAY</div><div class="amount-val" style="color:var(--purple)">RM 11.30</div></div>
+        <div class="qr-mock" id="qr-grid"></div>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Scan with TnG eWallet, Boost, GrabPay or MAE</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-bottom:14px">
+          <span class="badge badge-blue">DuitNow</span><span class="badge badge-green">TnG</span><span class="badge badge-amber">Boost</span><span class="badge badge-purple">GrabPay</span>
+        </div>
+        <button class="btn btn-success btn-lg" style="width:100%;justify-content:center" onclick="showReceipt()"><i class="ti ti-check"></i>Payment Received</button>
+      </div>
+    </div>
+  </div>
+  <!-- Receipt modal -->
+  <div class="modal-overlay" id="receipt-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><i class="ti ti-receipt" style="color:var(--green)"></i> Payment Successful</div>
+        <button class="icon-btn" onclick="document.getElementById('receipt-modal').classList.remove('open')"><i class="ti ti-x"></i></button>
+      </div>
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="width:56px;height:56px;background:rgba(16,185,129,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:24px;color:var(--green)"><i class="ti ti-check"></i></div>
+        <div style="font-size:22px;font-weight:800">RM 11.30</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px">Transaction #TXN-0248 · 19 May 2026 10:48 AM</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px">
+        <div class="balance-row"><span style="color:var(--text2)">Nescafé 3-in-1 × 2</span><span>RM 5.00</span></div>
+        <div class="balance-row"><span style="color:var(--text2)">Milo Can × 1</span><span>RM 3.00</span></div>
+        <div class="balance-row"><span style="color:var(--text2)">Oreo Original × 1</span><span>RM 1.80</span></div>
+        <div class="balance-row"><span style="color:var(--text2)">Maggi Laksa × 1</span><span>RM 1.50</span></div>
+        <div class="balance-row highlight"><span>Change Returned</span><span style="color:var(--green)">RM 8.70</span></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" style="flex:1;justify-content:center"><i class="ti ti-printer"></i>Print Receipt</button>
+        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="document.getElementById('receipt-modal').classList.remove('open');showPage('products',document.querySelectorAll('.tab-btn')[2])"><i class="ti ti-refresh"></i>New Transaction</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 6 — INVENTORY
+══════════════════════════════════════════ -->
+<div id="page-inventory" class="page">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon"><i class="ti ti-coffee"></i></div><div class="logo-text">QuickServe<span>Inventory Control</span></div></div></div>
+    <div class="sidebar-section">Inventory</div>
+    <div class="nav-item active"><i class="ti ti-clipboard-list"></i>Stock Overview</div>
+    <div class="nav-item"><i class="ti ti-alert-triangle" style="color:var(--red)"></i>Low Stock <span class="nav-badge">3</span></div>
+    <div class="nav-item"><i class="ti ti-truck-delivery"></i>Restock Orders</div>
+    <div class="nav-item"><i class="ti ti-history"></i>Stock History</div>
+    <div class="sidebar-section">Quick Actions</div>
+    <div class="nav-item"><i class="ti ti-plus"></i>Add Product</div>
+    <div class="nav-item"><i class="ti ti-barcode"></i>Scan Barcode</div>
+    <div class="sidebar-footer"><div class="user-pill"><div class="avatar">AD</div><div class="user-info"><div class="user-name">Ahmad Danial</div><div class="user-role">Administrator</div></div></div></div>
+  </nav>
+  <div class="content">
+    <div class="content-inner">
+      <div class="page-header">
+        <div><div class="page-title"><i class="ti ti-clipboard-list"></i>Inventory Management</div><div class="page-sub">86 products · 3 low stock alerts</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary btn-sm"><i class="ti ti-filter"></i>Filter</button>
+          <button class="btn btn-primary btn-sm"><i class="ti ti-plus"></i>Add Product</button>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="stat-card green"><div class="stat-icon green"><i class="ti ti-package"></i></div><div class="stat-value">86</div><div class="stat-label">Total Products</div></div>
+        <div class="stat-card amber"><div class="stat-icon amber"><i class="ti ti-alert-triangle"></i></div><div class="stat-value">3</div><div class="stat-label">Low Stock (≤5 units)</div></div>
+        <div class="stat-card red"><div class="stat-icon red"><i class="ti ti-x"></i></div><div class="stat-value">1</div><div class="stat-label">Out of Stock</div></div>
+      </div>
+      <div class="data-grid-wrap">
+        <div class="data-grid-header">
+          <div class="input-icon" style="flex:1;position:relative">
+            <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px"></i>
+            <input class="input-field" style="padding-left:36px" placeholder="Search inventory..." type="text">
+          </div>
+          <button class="btn btn-secondary btn-sm"><i class="ti ti-download"></i>Export CSV</button>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><div class="img-preview">☕</div></td><td><div style="font-weight:600;font-size:13px">Nescafé 3-in-1</div><div style="font-size:11px;color:var(--text3)">SKU: DRK-001</div></td><td><span class="badge badge-blue">Drinks</span></td><td style="font-weight:600">RM 2.50</td><td><div class="stock-bar-wrap"><div class="stock-bar"><div class="stock-fill" style="width:70%;background:var(--green)"></div></div><span style="font-size:12px;font-weight:600;min-width:30px">35</span></div></td><td><span class="badge badge-green">Good</span></td><td><div class="action-btns"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-plus"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div></td></tr>
+            <tr><td><div class="img-preview">🥤</div></td><td><div style="font-weight:600;font-size:13px">100Plus Original</div><div style="font-size:11px;color:var(--text3)">SKU: DRK-005</div></td><td><span class="badge badge-blue">Drinks</span></td><td style="font-weight:600">RM 2.80</td><td><div class="stock-bar-wrap"><div class="stock-bar"><div class="stock-fill" style="width:10%;background:var(--amber)"></div></div><span style="font-size:12px;font-weight:600;min-width:30px;color:var(--amber)">3</span></div></td><td><span class="badge badge-amber">Low</span></td><td><div class="action-btns"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-plus"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div></td></tr>
+            <tr><td><div class="img-preview">💊</div></td><td><div style="font-weight:600;font-size:13px">Panadol Soluble</div><div style="font-size:11px;color:var(--text3)">SKU: CAR-002</div></td><td><span class="badge badge-purple">Care</span></td><td style="font-weight:600">RM 4.50</td><td><div class="stock-bar-wrap"><div class="stock-bar"><div class="stock-fill" style="width:0%;background:var(--red)"></div></div><span style="font-size:12px;font-weight:600;min-width:30px;color:var(--red)">0</span></div></td><td><span class="badge badge-red">Out of Stock</span></td><td><div class="action-btns"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-plus"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div></td></tr>
+            <tr><td><div class="img-preview">🍫</div></td><td><div style="font-weight:600;font-size:13px">KitKat 4 Finger</div><div style="font-size:11px;color:var(--text3)">SKU: CHC-001</div></td><td><span class="badge badge-amber">Chocolate</span></td><td style="font-weight:600">RM 3.50</td><td><div class="stock-bar-wrap"><div class="stock-bar"><div class="stock-fill" style="width:50%;background:var(--blue)"></div></div><span style="font-size:12px;font-weight:600;min-width:30px">25</span></div></td><td><span class="badge badge-green">Good</span></td><td><div class="action-btns"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-plus"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div></td></tr>
+            <tr><td><div class="img-preview">🍜</div></td><td><div style="font-weight:600;font-size:13px">Maggi Asam Laksa</div><div style="font-size:11px;color:var(--text3)">SKU: NDL-001</div></td><td><span class="badge badge-purple">Noodles</span></td><td style="font-weight:600">RM 1.50</td><td><div class="stock-bar-wrap"><div class="stock-bar"><div class="stock-fill" style="width:8%;background:var(--amber)"></div></div><span style="font-size:12px;font-weight:600;min-width:30px;color:var(--amber)">4</span></div></td><td><span class="badge badge-amber">Low</span></td><td><div class="action-btns"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-plus"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 7 — REPORTS
+══════════════════════════════════════════ -->
+<div id="page-reports" class="page">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon"><i class="ti ti-coffee"></i></div><div class="logo-text">QuickServe<span>Sales Analytics</span></div></div></div>
+    <div class="sidebar-section">Reports</div>
+    <div class="nav-item active"><i class="ti ti-chart-bar"></i>Sales Overview</div>
+    <div class="nav-item"><i class="ti ti-calendar"></i>Daily Report</div>
+    <div class="nav-item"><i class="ti ti-calendar-month"></i>Monthly Report</div>
+    <div class="nav-item"><i class="ti ti-award"></i>Best Sellers</div>
+    <div class="nav-item"><i class="ti ti-download"></i>Export Reports</div>
+    <div class="sidebar-footer"><div class="user-pill"><div class="avatar">AD</div><div class="user-info"><div class="user-name">Ahmad Danial</div><div class="user-role">Administrator</div></div></div></div>
+  </nav>
+  <div class="content">
+    <div class="content-inner">
+      <div class="page-header">
+        <div><div class="page-title"><i class="ti ti-chart-bar"></i>Sales Reports</div><div class="page-sub">Analytics · May 2026</div></div>
+        <div style="display:flex;gap:8px">
+          <select class="input-field" style="width:auto;padding:7px 12px"><option>This Month</option><option>Last Month</option><option>This Year</option></select>
+          <button class="btn btn-primary btn-sm"><i class="ti ti-download"></i>Export PDF</button>
+        </div>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-num" style="color:var(--blue)">RM 24,180</div><div class="kpi-label">Monthly Revenue</div></div>
+        <div class="kpi-card"><div class="kpi-num" style="color:var(--green)">1,847</div><div class="kpi-label">Total Transactions</div></div>
+        <div class="kpi-card"><div class="kpi-num" style="color:var(--amber)">RM 13.09</div><div class="kpi-label">Avg. Order Value</div></div>
+        <div class="kpi-card"><div class="kpi-num" style="color:var(--purple)">92%</div><div class="kpi-label">QR Payment Rate</div></div>
+      </div>
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="chart-card">
+          <div class="chart-header"><div class="chart-title">Daily Sales — May 2026</div></div>
+          <div class="chart-bars" id="daily-chart"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div class="chart-title">Top Selling Products</div></div>
+          <div class="top-products">
+            <div class="top-item"><div class="top-rank r1">1</div><div class="top-info"><div class="top-name">Nescafé 3-in-1</div><div class="top-bar"><div class="top-fill" style="width:90%"></div></div><div class="top-sold" style="margin-top:2px">312 units sold</div></div><div class="top-rev">RM 780</div></div>
+            <div class="top-item"><div class="top-rank r2">2</div><div class="top-info"><div class="top-name">Milo Can 240ml</div><div class="top-bar"><div class="top-fill" style="width:74%"></div></div><div class="top-sold" style="margin-top:2px">247 units sold</div></div><div class="top-rev">RM 741</div></div>
+            <div class="top-item"><div class="top-rank r3">3</div><div class="top-info"><div class="top-name">KitKat 4 Finger</div><div class="top-bar"><div class="top-fill" style="width:60%"></div></div><div class="top-sold" style="margin-top:2px">198 units sold</div></div><div class="top-rev">RM 693</div></div>
+            <div class="top-item"><div class="top-rank" style="background:rgba(99,148,255,.08);color:var(--text3)">4</div><div class="top-info"><div class="top-name">Mamee Monster</div><div class="top-bar"><div class="top-fill" style="width:48%"></div></div><div class="top-sold" style="margin-top:2px">162 units sold</div></div><div class="top-rev">RM 194</div></div>
+            <div class="top-item"><div class="top-rank" style="background:rgba(99,148,255,.08);color:var(--text3)">5</div><div class="top-info"><div class="top-name">100Plus Original</div><div class="top-bar"><div class="top-fill" style="width:38%"></div></div><div class="top-sold" style="margin-top:2px">128 units sold</div></div><div class="top-rev">RM 358</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 8 — USERS
+══════════════════════════════════════════ -->
+<div id="page-users" class="page">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon"><i class="ti ti-coffee"></i></div><div class="logo-text">QuickServe<span>User Management</span></div></div></div>
+    <div class="sidebar-section">Users</div>
+    <div class="nav-item active"><i class="ti ti-users"></i>All Users</div>
+    <div class="nav-item"><i class="ti ti-shield"></i>Admins</div>
+    <div class="nav-item"><i class="ti ti-user"></i>Staff</div>
+    <div class="nav-item"><i class="ti ti-key"></i>Roles & Permissions</div>
+    <div class="sidebar-section">Actions</div>
+    <div class="nav-item" onclick="document.getElementById('user-modal').classList.add('open')"><i class="ti ti-user-plus"></i>Add New User</div>
+    <div class="sidebar-footer"><div class="user-pill"><div class="avatar">AD</div><div class="user-info"><div class="user-name">Ahmad Danial</div><div class="user-role">Administrator</div></div></div></div>
+  </nav>
+  <div class="content">
+    <div class="content-inner">
+      <div class="page-header">
+        <div><div class="page-title"><i class="ti ti-users"></i>User Management</div><div class="page-sub">5 users registered</div></div>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('user-modal').classList.add('open')"><i class="ti ti-user-plus"></i>Add User</button>
+      </div>
+      <div class="filter-bar" style="margin-bottom:16px">
+        <div class="input-icon" style="flex:1;min-width:200px;position:relative">
+          <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px"></i>
+          <input class="input-field" style="padding-left:36px" placeholder="Search users..." type="text">
+        </div>
+        <div class="filter-chips">
+          <div class="chip active">All Roles</div>
+          <div class="chip">Admin</div>
+          <div class="chip">Staff</div>
+          <div class="chip">Operator</div>
+        </div>
+      </div>
+      <div class="user-card-grid">
+        <div class="user-card">
+          <div class="user-avatar" style="background:linear-gradient(135deg,var(--blue),var(--accent))">AD</div>
+          <div class="user-card-name">Ahmad Danial</div>
+          <div class="user-card-role">ahmad@quickserve.my</div>
+          <span class="badge badge-red" style="margin-bottom:10px">Administrator</span>
+          <div class="user-card-actions"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-key"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div>
+        </div>
+        <div class="user-card">
+          <div class="user-avatar" style="background:linear-gradient(135deg,var(--green),var(--cyan))">NA</div>
+          <div class="user-card-name">Nur Aisyah</div>
+          <div class="user-card-role">aisyah@quickserve.my</div>
+          <span class="badge badge-blue" style="margin-bottom:10px">Staff</span>
+          <div class="user-card-actions"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-key"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div>
+        </div>
+        <div class="user-card">
+          <div class="user-avatar" style="background:linear-gradient(135deg,var(--amber),var(--red))">HR</div>
+          <div class="user-card-name">Hafiz Rahman</div>
+          <div class="user-card-role">hafiz@quickserve.my</div>
+          <span class="badge badge-blue" style="margin-bottom:10px">Staff</span>
+          <div class="user-card-actions"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-key"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div>
+        </div>
+        <div class="user-card">
+          <div class="user-avatar" style="background:linear-gradient(135deg,var(--purple),var(--accent))">SN</div>
+          <div class="user-card-name">Siti Nora</div>
+          <div class="user-card-role">siti@quickserve.my</div>
+          <span class="badge badge-green" style="margin-bottom:10px">Operator</span>
+          <div class="user-card-actions"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-key"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div>
+        </div>
+        <div class="user-card">
+          <div class="user-avatar" style="background:linear-gradient(135deg,var(--cyan),var(--blue))">FA</div>
+          <div class="user-card-name">Farah Adila</div>
+          <div class="user-card-role">farah@quickserve.my</div>
+          <span class="badge badge-green" style="margin-bottom:10px">Operator</span>
+          <div class="user-card-actions"><button class="icon-btn"><i class="ti ti-edit"></i></button><button class="icon-btn"><i class="ti ti-key"></i></button><button class="icon-btn del"><i class="ti ti-trash"></i></button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add User Modal -->
+  <div class="modal-overlay" id="user-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><i class="ti ti-user-plus" style="color:var(--blue)"></i> Add New User</div>
+        <button class="icon-btn" onclick="document.getElementById('user-modal').classList.remove('open')"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="grid-2">
+        <div class="input-wrap"><label>Full Name</label><input class="input-field" type="text" placeholder="John Doe"></div>
+        <div class="input-wrap"><label>Email</label><input class="input-field" type="email" placeholder="user@quickserve.my"></div>
+      </div>
+      <div class="input-wrap"><label>Username</label><input class="input-field" type="text" placeholder="username123"></div>
+      <div class="grid-2">
+        <div class="input-wrap"><label>Password</label><input class="input-field" type="password" placeholder="••••••••"></div>
+        <div class="input-wrap"><label>Role</label><select class="input-field"><option>Administrator</option><option>Staff</option><option>Operator</option></select></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+        <button class="btn btn-secondary" onclick="document.getElementById('user-modal').classList.remove('open')">Cancel</button>
+        <button class="btn btn-primary"><i class="ti ti-check"></i>Create User</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// Navigation
+function showPage(id, tabEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if (page) page.classList.add('active');
+  if (tabEl) tabEl.classList.add('active');
+}
+
+// Login tab
+function setLoginTab(el, type) {
+  document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Checkbox
+function toggleCheck(row) {
+  const box = row.querySelector('.check-box');
+  box.classList.toggle('checked');
+  box.innerHTML = box.classList.contains('checked') ? '<i class="ti ti-check"></i>' : '';
+}
+
+// Payment method
+function selectPay(el) {
+  document.querySelectorAll('.pay-method').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  const cash = document.getElementById('pay-cash');
+  const qr = document.getElementById('pay-qr');
+  if (el.classList.contains('qr')) { cash.style.display='none'; qr.style.display='block'; }
+  else { cash.style.display='block'; qr.style.display='none'; }
+}
+
+// Balance calc
+function calcBalance(v) {
+  const total = 11.30, cash = parseFloat(v) || 0;
+  const change = cash - total;
+  const el = document.getElementById('change-display');
+  if (el) {
+    el.textContent = change >= 0 ? 'RM ' + change.toFixed(2) : 'Insufficient';
+    el.style.color = change >= 0 ? 'var(--green)' : 'var(--red)';
+  }
+}
+
+function showReceipt() {
+  document.getElementById('receipt-modal').classList.add('open');
+}
+
+// Build revenue chart
+function buildChart(id, data, labels) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const max = Math.max(...data.map(d => Math.max(d[0], d[1])));
+  el.innerHTML = data.map((d, i) => `
+    <div class="bar-group">
+      <div class="bar-wrap">
+        <div class="bar bar-blue" style="height:${Math.round(d[0]/max*100)}%"></div>
+        <div class="bar bar-cyan" style="height:${Math.round(d[1]/max*100)}%"></div>
+      </div>
+      <div class="bar-label">${labels[i]}</div>
+    </div>`).join('');
+}
+
+buildChart('revenue-chart',
+  [[820,610],[940,780],[710,650],[880,820],[1020,900],[1150,960],[480,410]],
+  ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+);
+buildChart('daily-chart',
+  [[640,550],[780,620],[820,700],[760,680],[890,750],[950,800],[710,660],[820,730],[870,780],[960,820],[1020,880]],
+  ['9','10','11','12','13','14','15','16','17','18','19']
+);
+
+// QR pattern
+const qr = document.getElementById('qr-grid');
+if (qr) {
+  const pattern = [1,1,1,0,1,0,1,1,0,1,1,0,0,1,0,1,0,0,1,1,1,0,1,1,0,0,1,0,1,0,0,1,0,1,1,0,0,1,1,0,1,0,1,1,0,0,1,0,0,1,1,1,1,0,0,1,0,1,0,1,1,0,0,1,0,0,1,0,1,1,0,1,1,0,0,1,1,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,1];
+  qr.innerHTML = pattern.map(v => `<div class="qr-pixel${v?' dark':''}"></div>`).join('');
+}
+
+// Filter chips (visual toggle)
+document.querySelectorAll('.filter-chips').forEach(fc => {
+  fc.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      fc.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+});
+</script>
+</body>
+</html>
