@@ -474,3 +474,260 @@ Please generate:
 5. Tips to make the project look professional
 
 Do not generate full backend logic yet. Focus mainly on frontend interface demo and UI structure.
+
+
+
+
+// ================================
+// QUICKSERVE VENDING MACHINE SYSTEM
+// C# WINFORMS UI DESIGN EXAMPLE
+// ================================
+
+Project Name:
+QuickServe Vending Machine System
+
+Language:
+C# Windows Forms (WinForms)
+
+Theme:
+Dark Blue + White Modern UI
+
+==================================
+1. LOGIN FORM DESIGN
+==================================
+
+----------------------------------
+|           QuickServe           |
+|      Smart Vending System      |
+|                                |
+| Username: [______________]     |
+| Password: [______________]     |
+|                                |
+| [ ] Remember Me                |
+|                                |
+|      [ LOGIN BUTTON ]          |
+----------------------------------
+
+Suggested Controls:
+- Label
+- TextBox
+- Button
+- CheckBox
+- PictureBox
+
+Color:
+- Background: #0F172A
+- Button: Cyan Blue
+- Text: White
+
+==================================
+2. DASHBOARD FORM DESIGN
+==================================
+
+ --------------------------------------------------------
+| Sidebar             | Dashboard                        |
+|---------------------|----------------------------------|
+| Dashboard           | Total Sales      RM12,450       |
+| Products            | Products         128            |
+| Cart                | Low Stock        7              |
+| Payment             | Transactions     432            |
+| Inventory           |                                  |
+| Reports             | [ SALES CHART ]                 |
+| Users               |                                  |
+ --------------------------------------------------------
+
+Suggested Controls:
+- Panel
+- Button
+- Chart
+- Label
+
+==================================
+3. PRODUCT DISPLAY FORM
+==================================
+
+ --------------------------------------------------------
+| Search: [_______________] [Category ▼]               |
+ --------------------------------------------------------
+
+ --------------------------------------------------------
+| 🥤 Coca Cola       RM3.50      [Add To Cart]         |
+| 🍫 Chocolate       RM2.80      [Add To Cart]         |
+| 🍜 Noodles         RM5.50      [Add To Cart]         |
+| 🍟 Chips           RM4.00      [Add To Cart]         |
+ --------------------------------------------------------
+
+Suggested Controls:
+- FlowLayoutPanel
+- PictureBox
+- Label
+- Button
+
+==================================
+4. SHOPPING CART FORM
+==================================
+
+ --------------------------------------------------------
+| Product        Qty       Price        Total            |
+ --------------------------------------------------------
+| Coca Cola       2        RM3.50       RM7.00           |
+| Chips           1        RM4.00       RM4.00           |
+ --------------------------------------------------------
+
+Total Payment: RM11.00
+
+              [ CHECKOUT ]
+
+Suggested Controls:
+- DataGridView
+- NumericUpDown
+- Button
+- Label
+
+==================================
+5. PAYMENT FORM
+==================================
+
+ -----------------------------------------
+| Select Payment Method                  |
+|                                        |
+| ( ) Cash                               |
+| ( ) QR Payment                         |
+| ( ) Card                               |
+|                                        |
+| Enter Cash: [__________]               |
+|                                        |
+| Balance: RM3.00                        |
+|                                        |
+|      [ CONFIRM PAYMENT ]               |
+ -----------------------------------------
+
+Suggested Controls:
+- RadioButton
+- TextBox
+- Button
+- Label
+
+==================================
+6. INVENTORY MANAGEMENT FORM
+==================================
+
+ --------------------------------------------------------
+| Product       Stock       Status       Action          |
+ --------------------------------------------------------
+| Noodles       5           Low Stock    [Restock]       |
+| Cola          20          Normal       [Edit]          |
+ --------------------------------------------------------
+
+Suggested Controls:
+- DataGridView
+- Button
+- Label
+
+==================================
+7. SALES REPORT FORM
+==================================
+
+ --------------------------------------------------------
+| Daily Sales Report                                     |
+|                                                        |
+|            [ SALES BAR CHART ]                         |
+|                                                        |
+| Monthly Revenue: RM12,450                              |
+ --------------------------------------------------------
+
+Suggested Controls:
+- Chart
+- Label
+- DateTimePicker
+
+==================================
+8. USER MANAGEMENT FORM
+==================================
+
+ --------------------------------------------------------
+| Username       Role         Action                     |
+ --------------------------------------------------------
+| admin          Admin        [Edit] [Delete]            |
+| staff01        Staff        [Edit] [Delete]            |
+ --------------------------------------------------------
+
+Suggested Controls:
+- DataGridView
+- ComboBox
+- Button
+
+==================================
+EXAMPLE MODERN COLOR PALETTE
+==================================
+
+Dark Background:
+#0F172A
+
+Sidebar:
+#1E293B
+
+Card Background:
+#334155
+
+Button:
+#06B6D4
+
+Text:
+#FFFFFF
+
+==================================
+SUGGESTED FONTS
+==================================
+
+- Segoe UI
+- Poppins
+- Inter
+
+==================================
+FREE ICON SOURCES
+==================================
+
+- FontAwesome
+- Flaticon
+- Icons8
+
+==================================
+TIPS TO LOOK PROFESSIONAL
+==================================
+
+1. Use rounded buttons
+2. Add hover effects
+3. Use product images
+4. Keep spacing clean
+5. Use modern icons
+6. Use consistent colors
+7. Add animations for buttons
+8. Use shadow effects on panels
+9. Avoid overcrowded forms
+10. Use dark mode UI
+
+==================================
+EXAMPLE EVENT-DRIVEN C# CODE
+==================================
+
+BUTTON CLICK EVENT
+
+private void btnCheckout_Click(object sender, EventArgs e)
+{
+    MessageBox.Show("Payment Successful!");
+}
+
+TEXTBOX EVENT
+
+private void txtSearch_TextChanged(object sender, EventArgs e)
+{
+    // Search product logic
+}
+
+FORM LOAD EVENT
+
+private void Dashboard_Load(object sender, EventArgs e)
+{
+    LoadProducts();
+}
