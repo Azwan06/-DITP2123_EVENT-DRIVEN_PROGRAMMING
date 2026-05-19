@@ -329,3 +329,32 @@ Timer
 Real-time update
 ProgressBar
 Payment loading
+
+
+
+
+
+
+
+
+
+
+
+erd 
+
+Here's a complete visual breakdown of your QuickServe Vending Machine System design document, covering:
+System Overview widget includes:
+
+Tech stack (C#, WinForms, Visual Studio 2026, SQL Server)
+All 9 forms color-coded by role — green for customer-facing, red/coral for admin-only, cyan for the entry point
+Event-driven programming table with all 8 key event types and their handlers
+Full 6-table database schema with PK/FK badges
+Advanced features list
+
+ERD diagram shows all 6 entities with their fields and relationships using crow's foot notation — CATEGORIES → PRODUCTS, CUSTOMERS → TRANSACTIONS, TRANSACTIONS → TRANSACTION_DETAILS, PRODUCTS → TRANSACTION_DETAILS, and PRODUCTS → INVENTORY.
+Some implementation tips as you build this:
+
+For the timer1_Tick low-stock check, set the interval to something like 30,000ms (30 seconds) and query WHERE StockQuantity < 5
+The Payment Form balance calculation (balance = cash - total) should validate that cash >= total before enabling the confirm button
+Use a FlowLayoutPanel with AutoScroll = true for the product grid — it handles dynamic card layout cleanly
+Store ProductImage as a relative file path (e.g. images/cola.png) rather than binary in the DB for better performance
