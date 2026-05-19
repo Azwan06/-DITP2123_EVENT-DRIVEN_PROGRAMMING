@@ -1,0 +1,248 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0A1628;--navy2:#0F1F3D;--navy3:#162952;
+  --cyan:#00D4FF;--cyan2:#00A8CC;
+  --amber:#FFB547;--amber2:#FF8C00;
+  --green:#00E599;--green2:#00B87A;
+  --coral:#FF6B6B;--white:#F0F4FF;
+  --muted:#8899BB;--border:rgba(0,212,255,0.15);
+}
+body{background:transparent;font-family:'Syne',sans-serif;color:var(--white)}
+
+.hero{padding:2rem 0 1rem;text-align:center;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,0.1);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:11px;font-family:'DM Mono',monospace;color:var(--cyan);letter-spacing:.08em;margin-bottom:1rem}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--cyan);border-radius:50%;box-shadow:0 0 6px var(--cyan)}
+.hero h1{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:.5rem}
+.hero h1 span{color:var(--cyan)}
+.hero-sub{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.04em}
+
+.section-label{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.12em;color:var(--cyan);text-transform:uppercase;margin:1.5rem 0 .75rem;padding-left:12px;border-left:2px solid var(--cyan)}
+
+.stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.stack-card{background:rgba(15,31,61,0.8);border:1px solid var(--border);border-radius:10px;padding:14px 12px;transition:.2s}
+.stack-card:hover{border-color:rgba(0,212,255,0.4);transform:translateY(-2px)}
+.stack-card .sc-icon{font-size:18px;margin-bottom:8px}
+.stack-card .sc-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.08em;margin-bottom:4px}
+.stack-card .sc-val{font-size:13px;font-weight:600;color:var(--white)}
+
+.forms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.5rem}
+.form-card{background:rgba(15,31,61,0.7);border:1px solid var(--border);border-radius:10px;padding:14px 14px 12px}
+.form-card .fc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.form-card .fc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.form-card .fc-title{font-size:13px;font-weight:600}
+.form-card .fc-role{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.06em;margin-bottom:8px}
+.form-card .fc-items{display:flex;flex-wrap:wrap;gap:5px}
+.form-card .fc-tag{font-size:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:2px 8px;color:var(--muted);font-family:'DM Mono',monospace}
+
+.event-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem;font-size:12px}
+.event-table th{text-align:left;padding:8px 10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border)}
+.event-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:top}
+.event-table tr:last-child td{border-bottom:none}
+.event-table tr:hover td{background:rgba(0,212,255,0.03)}
+.ev-badge{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:4px;font-weight:500}
+.ev-click{background:rgba(0,212,255,0.1);color:var(--cyan)}
+.ev-change{background:rgba(255,181,71,0.1);color:var(--amber)}
+.ev-load{background:rgba(0,229,153,0.1);color:var(--green)}
+.ev-timer{background:rgba(255,107,107,0.1);color:var(--coral)}
+
+.db-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem}
+.db-table{background:rgba(15,31,61,0.7);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.db-table .dbt-head{background:rgba(0,212,255,0.08);padding:8px 12px;font-size:11px;font-weight:600;color:var(--cyan);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.db-table .dbt-head::before{content:'⊞';font-size:12px;opacity:.7}
+.db-field{padding:5px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.03);font-size:11px}
+.db-field:last-child{border-bottom:none}
+.db-field .df-name{color:var(--white);font-family:'DM Mono',monospace}
+.df-type{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
+.df-pk{font-size:9px;background:rgba(255,181,71,0.15);color:var(--amber);border-radius:3px;padding:1px 5px;margin-left:4px}
+.df-fk{font-size:9px;background:rgba(0,229,153,0.12);color:var(--green);border-radius:3px;padding:1px 5px;margin-left:4px}
+
+.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
+.feat{background:rgba(15,31,61,0.6);border:1px solid var(--border);border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;font-size:12px}
+.feat-icon{font-size:16px;flex-shrink:0}
+
+.footer{text-align:center;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.06em;padding:1rem 0 .5rem;border-top:1px solid var(--border)}
+</style>
+
+<div style="background:linear-gradient(160deg,#0A1628 0%,#0F1F3D 100%);padding:1.5rem;border-radius:16px;min-height:400px">
+
+<div class="hero">
+  <div class="hero-badge"><i class="ti ti-device-desktop-analytics" aria-hidden="true"></i> C# · WinForms · SQL Server</div>
+  <h1>Quick<span>Serve</span> Vending Machine</h1>
+  <p class="hero-sub">System Design Document · Visual Studio 2026</p>
+</div>
+
+<div class="section-label">Tech Stack</div>
+<div class="stack-grid">
+  <div class="stack-card"><div class="sc-icon"><i class="ti ti-brand-visual-studio" aria-hidden="true"></i></div><div class="sc-label">Language</div><div class="sc-val">C# (.NET)</div></div>
+  <div class="stack-card"><div class="sc-icon"><i class="ti ti-layout" aria-hidden="true"></i></div><div class="sc-label">Framework</div><div class="sc-val">WinForms</div></div>
+  <div class="stack-card"><div class="sc-icon"><i class="ti ti-code" aria-hidden="true"></i></div><div class="sc-label">IDE</div><div class="sc-val">VS 2026 CE</div></div>
+  <div class="stack-card"><div class="sc-icon"><i class="ti ti-database" aria-hidden="true"></i></div><div class="sc-label">Database</div><div class="sc-val">SQL Server</div></div>
+</div>
+
+<div class="section-label">Application Forms (9 Interfaces)</div>
+<div class="forms-grid">
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--cyan)"></div><div class="fc-title">Login Form</div></div>
+    <div class="fc-role" style="color:var(--cyan)">ENTRY POINT</div>
+    <div class="fc-items">
+      <span class="fc-tag">Admin login</span><span class="fc-tag">Staff login</span><span class="fc-tag">Guest access</span>
+      <span class="fc-tag">btnLogin_Click</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--amber)"></div><div class="fc-title">Dashboard Form</div></div>
+    <div class="fc-role" style="color:var(--amber)">NAVIGATION HUB</div>
+    <div class="fc-items">
+      <span class="fc-tag">Sales summary</span><span class="fc-tag">Stock alerts</span><span class="fc-tag">Charts</span>
+      <span class="fc-tag">Panel + Labels</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--green)"></div><div class="fc-title">Product Display</div></div>
+    <div class="fc-role" style="color:var(--green)">CUSTOMER FACING</div>
+    <div class="fc-items">
+      <span class="fc-tag">Browse products</span><span class="fc-tag">Categories</span><span class="fc-tag">Add to cart</span>
+      <span class="fc-tag">FlowLayoutPanel</span><span class="fc-tag">PictureBox</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--green)"></div><div class="fc-title">Shopping Cart</div></div>
+    <div class="fc-role" style="color:var(--green)">CUSTOMER FACING</div>
+    <div class="fc-items">
+      <span class="fc-tag">View items</span><span class="fc-tag">Update qty</span><span class="fc-tag">Remove item</span>
+      <span class="fc-tag">numericQuantity_Changed</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--green)"></div><div class="fc-title">Payment Form</div></div>
+    <div class="fc-role" style="color:var(--green)">CUSTOMER FACING</div>
+    <div class="fc-items">
+      <span class="fc-tag">Cash</span><span class="fc-tag">QR code</span><span class="fc-tag">Card</span>
+      <span class="fc-tag">Balance calc</span><span class="fc-tag">txtCash_Changed</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--green)"></div><div class="fc-title">Receipt Form</div></div>
+    <div class="fc-role" style="color:var(--green)">CUSTOMER FACING</div>
+    <div class="fc-items">
+      <span class="fc-tag">Display receipt</span><span class="fc-tag">Print</span><span class="fc-tag">Save transaction</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--coral)"></div><div class="fc-title">Product Management</div></div>
+    <div class="fc-role" style="color:var(--coral)">ADMIN ONLY</div>
+    <div class="fc-items">
+      <span class="fc-tag">Add product</span><span class="fc-tag">Edit</span><span class="fc-tag">Delete</span>
+      <span class="fc-tag">Upload image</span><span class="fc-tag">btnDelete_Click</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--coral)"></div><div class="fc-title">Inventory Management</div></div>
+    <div class="fc-role" style="color:var(--coral)">ADMIN ONLY</div>
+    <div class="fc-items">
+      <span class="fc-tag">Update stock</span><span class="fc-tag">Low stock alert</span><span class="fc-tag">Restock</span>
+      <span class="fc-tag">timer1_Tick</span>
+    </div>
+  </div>
+
+  <div class="form-card" style="grid-column:span 2">
+    <div class="fc-head"><div class="fc-dot" style="background:var(--coral)"></div><div class="fc-title">Sales Report + User Management</div></div>
+    <div class="fc-role" style="color:var(--coral)">ADMIN ONLY</div>
+    <div class="fc-items">
+      <span class="fc-tag">Daily/Monthly reports</span><span class="fc-tag">Best-selling products</span>
+      <span class="fc-tag">DataGridView</span><span class="fc-tag">Chart</span><span class="fc-tag">DateTimePicker</span>
+      <span class="fc-tag">Manage accounts</span><span class="fc-tag">Change password</span><span class="fc-tag">Assign roles</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="section-label">Event-Driven Programming — Key Events</div>
+<table class="event-table">
+  <thead><tr><th>Event Type</th><th>Handler / Trigger</th><th>Form</th><th>Action</th></tr></thead>
+  <tbody>
+    <tr><td><span class="ev-badge ev-click">Button Click</span></td><td><span style="font-family:'DM Mono',monospace;font-size:11px">btnAddToCart_Click</span></td><td>Product Display</td><td>Add item to cart, update total</td></tr>
+    <tr><td><span class="ev-badge ev-change">TextChanged</span></td><td><span style="font-family:'DM Mono',monospace;font-size:11px">txtCash_TextChanged</span></td><td>Payment</td><td>Recalculate balance = cash − total</td></tr>
+    <tr><td><span class="ev-badge ev-change">ValueChanged</span></td><td><span style="font-family:'DM Mono',monospace;font-size:11px">numericQuantity_ValueChanged</span></td><td>Shopping Cart</td><td>Call CalculateTotal()</td></tr>
+    <tr><td><span class="ev-badge ev-change">SelectedIndexChanged</span></td><td><span style="font-family:'DM Mono',monospace;font-size:11px">cmbCategory_SelectedIndexChanged</span></td><td>Product Display</td><td>Filter products by category</td></tr>
+    <tr><td><span class="ev-badge ev-timer">Timer Tick</span></td><td><span style="font-family:'DM Mono',monospace;font-size:11px">timer1_Tick</span></td><td>Inventory</td><td>CheckLowStock() auto-alert</td></tr>
+    <tr><td><span class="ev-badge ev-load">Form Load</span></td><td><span style="font-family:'DM Mono',monospace;font-size:11px">Form_Load</span></td><td>All forms</td><td>Load data from database on init</td></tr>
+    <tr><td><span class="ev-badge ev-click">CellClick</span></td><td><span style="font-family:'DM Mono',monospace;font-size:11px">dataGridView_CellClick</span></td><td>Reports</td><td>Show product/transaction details</td></tr>
+    <tr><td><span class="ev-badge ev-change">KeyPress</span></td><td><span style="font-family:'DM Mono',monospace;font-size:11px">txtInput_KeyPress</span></td><td>Various</td><td>Validate numeric/text input</td></tr>
+  </tbody>
+</table>
+
+<div class="section-label">Database Schema (6 Tables)</div>
+<div class="db-grid">
+  <div class="db-table">
+    <div class="dbt-head">Users</div>
+    <div class="db-field"><span class="df-name">UserID<span class="df-pk">PK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">Username</span><span class="df-type">varchar</span></div>
+    <div class="db-field"><span class="df-name">Password</span><span class="df-type">varchar</span></div>
+    <div class="db-field"><span class="df-name">Role</span><span class="df-type">varchar</span></div>
+  </div>
+  <div class="db-table">
+    <div class="dbt-head">Categories</div>
+    <div class="db-field"><span class="df-name">CategoryID<span class="df-pk">PK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">CategoryName</span><span class="df-type">varchar</span></div>
+  </div>
+  <div class="db-table">
+    <div class="dbt-head">Products</div>
+    <div class="db-field"><span class="df-name">ProductID<span class="df-pk">PK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">CategoryID<span class="df-fk">FK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">ProductName</span><span class="df-type">varchar</span></div>
+    <div class="db-field"><span class="df-name">Price</span><span class="df-type">decimal</span></div>
+    <div class="db-field"><span class="df-name">StockQuantity</span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">ProductImage</span><span class="df-type">varchar</span></div>
+  </div>
+  <div class="db-table">
+    <div class="dbt-head">Transactions</div>
+    <div class="db-field"><span class="df-name">TransactionID<span class="df-pk">PK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">CustomerID<span class="df-fk">FK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">TotalAmount</span><span class="df-type">decimal</span></div>
+    <div class="db-field"><span class="df-name">PaymentMethod</span><span class="df-type">varchar</span></div>
+    <div class="db-field"><span class="df-name">TransactionDate</span><span class="df-type">datetime</span></div>
+  </div>
+  <div class="db-table">
+    <div class="dbt-head">TransactionDetails</div>
+    <div class="db-field"><span class="df-name">DetailID<span class="df-pk">PK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">TransactionID<span class="df-fk">FK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">ProductID<span class="df-fk">FK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">Quantity</span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">Subtotal</span><span class="df-type">decimal</span></div>
+  </div>
+  <div class="db-table">
+    <div class="dbt-head">Inventory</div>
+    <div class="db-field"><span class="df-name">InventoryID<span class="df-pk">PK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">ProductID<span class="df-fk">FK</span></span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">StockIn</span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">StockOut</span><span class="df-type">int</span></div>
+    <div class="db-field"><span class="df-name">LastUpdated</span><span class="df-type">datetime</span></div>
+  </div>
+</div>
+
+<div class="section-label">Advanced Features</div>
+<div class="features-grid">
+  <div class="feat"><span class="feat-icon"><i class="ti ti-qrcode" aria-hidden="true"></i></span>QR payment simulation</div>
+  <div class="feat"><span class="feat-icon"><i class="ti ti-scan" aria-hidden="true"></i></span>Barcode scanner sim</div>
+  <div class="feat"><span class="feat-icon"><i class="ti ti-printer" aria-hidden="true"></i></span>Receipt printing</div>
+  <div class="feat"><span class="feat-icon"><i class="ti ti-moon" aria-hidden="true"></i></span>Dark mode UI</div>
+  <div class="feat"><span class="feat-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></span>Low stock alerts</div>
+  <div class="feat"><span class="feat-icon"><i class="ti ti-star" aria-hidden="true"></i></span>Membership points</div>
+  <div class="feat"><span class="feat-icon"><i class="ti ti-chart-bar" aria-hidden="true"></i></span>Sales analytics</div>
+  <div class="feat"><span class="feat-icon"><i class="ti ti-language" aria-hidden="true"></i></span>Multi-language</div>
+</div>
+
+<div class="footer">QuickServe Vending Machine System · C# WinForms · Event-Driven Architecture · 2026</div>
+</div>
