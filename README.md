@@ -358,3 +358,119 @@ For the timer1_Tick low-stock check, set the interval to something like 30,000ms
 The Payment Form balance calculation (balance = cash - total) should validate that cash >= total before enabling the confirm button
 Use a FlowLayoutPanel with AutoScroll = true for the product grid — it handles dynamic card layout cleanly
 Store ProductImage as a relative file path (e.g. images/cola.png) rather than binary in the DB for better performance
+
+
+
+
+
+
+
+code
+I want you to create a modern demo interface (UI only) for my Diploma-level Event-Driven Programming project using C# WinForms in Visual Studio 2026 Community Edition.
+
+Project Title:
+QuickServe Vending Machine System
+
+Objective:
+Create an attractive vending machine management system interface suitable for a student diploma project. The system should look modern, clean, and realistic like a smart vending machine application.
+
+Requirements:
+
+- Use C# Windows Forms (WinForms)
+- Modern UI design
+- Dark blue + white color theme
+- Rounded buttons and panels
+- Responsive-looking layout
+- Use icons and product images
+- Include navigation sidebar
+
+Please create the following interfaces/pages:
+
+1. Login Form
+
+- Username textbox
+- Password textbox
+- Login button
+- Remember me checkbox
+- Logo/title
+
+2. Dashboard Form
+
+- Sidebar navigation
+- Dashboard statistics cards
+- Total Sales
+- Total Products
+- Low Stock Alerts
+- Revenue Chart
+
+3. Product Display Form
+
+- Product cards with image
+- Product name
+- Price
+- Add to Cart button
+- Product category filter
+- Search bar
+
+4. Shopping Cart Form
+
+- Selected products table
+- Quantity selector
+- Remove item button
+- Total payment display
+- Checkout button
+
+5. Payment Form
+
+- Payment method selection
+- QR payment section
+- Cash payment textbox
+- Balance display
+- Confirm payment button
+
+6. Inventory Management Form
+
+- DataGridView for stock
+- Add/Edit/Delete buttons
+- Low stock indicator
+- Product image preview
+
+7. Sales Report Form
+
+- Charts and graphs
+- Daily sales report
+- Monthly sales report
+- Best-selling products
+
+8. User Management Form
+
+- Add/Edit/Delete users
+- User roles
+- Search user feature
+
+Design Requirements:
+
+- Use FontAwesome icons if possible
+- Use PictureBox for products
+- Use FlowLayoutPanel for product layout
+- Use DataGridView for tables
+- Add hover effects on buttons
+- Add simple animations if possible
+- Professional and clean appearance
+
+Extra:
+
+- Suggest suitable fonts
+- Suggest color palette
+- Suggest free icon/image resources
+- Make the interface look GitHub portfolio worthy
+
+Please generate:
+
+1. Interface layout ideas
+2. Suggested controls/components
+3. UI color theme
+4. Sample arrangement/layout description
+5. Tips to make the project look professional
+
+Do not generate full backend logic yet. Focus mainly on frontend interface demo and UI structure.
